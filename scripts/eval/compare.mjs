@@ -16,7 +16,9 @@
  *             builds (named fields), asked live through requestBodyOf and
  *             decided by routedDecisionOf on the default config: family
  *             first, the cheapest family with half of Jev's probability on
- *             it or cheaper, then its likeliest pair. Nothing here
+ *             it or cheaper, then its likeliest pair, or the whole
+ *             answer's median effort when that family holds under half
+ *             of it. Nothing here
  *             re-implements either: the bodies, the states and the
  *             decisions are the hooks' own.
  *

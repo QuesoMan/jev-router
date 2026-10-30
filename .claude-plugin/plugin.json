@@ -75,7 +75,7 @@
     "context": {
       "type": "string",
       "title": "Context sent to Jev",
-      "description": "What leaves the machine with each question to TypeSafe. full: the request, the last few messages of the conversation (the agent's replies can quote tool output), the files in play, and beside a short subagent brief the developer's last request. request: only the request, and for a subagent its brief, description, agent type and whether a workflow started it; the transcript is never read. JEV_ROUTER_CONTEXT overrides it.",
+      "description": "What leaves the machine with each question to TypeSafe. full: the request, the last few messages of the conversation (the agent's replies can quote tool output), the files in play, and beside a short subagent brief the developer's last request. request: only the request, and for a subagent its brief, description, agent type and whether a workflow started it; the main loop's transcript and directory are never read. JEV_ROUTER_CONTEXT overrides it, and a value there that is not a mode reads as request.",
       "options": ["full", "request"],
       "default": "full"
     }

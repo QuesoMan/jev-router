@@ -167,7 +167,8 @@ const probeBodyOf = model =>
  * What Jev's `route` answer comes to as family·effort. A 200 whose answer
  * names no offered pair still routes nothing: every turn would fall back
  * to the default. `d` is the family with the most of Jev's probability
- * and its likeliest pair; a pick the settings move (the floor's cumulative
+ * at its likeliest pair, or at the whole answer's median effort (kept in
+ * the family's band) when the family holds under half of it; a pick the settings move (the floor's cumulative
  * family share taking it up, a Fable pick short of the Fable bar capped)
  * says where it would run instead. The shares are printed per family, the
  * pairs' added up, since that is what the floor reads; an answer with no

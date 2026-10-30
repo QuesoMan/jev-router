@@ -254,10 +254,12 @@ Reading costs one `$.session.messages()` and one `$.session.cwd()` per
 main-loop turn, side by side, each given 250ms at most. A read that fails or
 does not answer leaves its fields out, and Jev is asked about the request
 alone; it never holds up or blocks a turn. Under `context: request`
-neither is read. A spawn reads nothing: the
+neither is read. A spawn normally reads nothing: the
 developer's latest request is the router's own copy, kept at the main loop's
 `turn.start`, so a workflow fanning out to forty agents costs no read at
-all. Rows in `/jev` keep showing the text you typed, never the JSON.
+all. The one exception is a plugin reload, which loses that copy: under
+`full`, the first thin brief after it reads the transcript once (never under
+`request`, which sends no `parent_request`). Rows in `/jev` keep showing the text you typed, never the JSON.
 
 ### What is sent to TypeSafe
 
@@ -458,9 +460,11 @@ the session each question carries. There are eleven:
 - **`context`** is `full` or `request` (any case in the env var), and says
   what each question carries to TypeSafe: under `full` the conversation and
   files around a request, under `request` the request (or a subagent's
-  brief) alone, with no read of the transcript. The fields of each are in
-  [What is sent to TypeSafe](#what-is-sent-to-typesafe). Anything else
-  falls through to the next source.
+  brief) alone, with no read of the main loop's transcript. The fields of
+  each are in [What is sent to TypeSafe](#what-is-sent-to-typesafe). It is
+  the one setting that does not fall through: a `JEV_ROUTER_CONTEXT` that
+  is set but is not a mode (`request-only`, `none`) reads as `request`,
+  since a typo there should cost context, not privacy. A blank one is unset.
 
 How the ladder settings bear on one another (a default the Fable setting
 forbids, a default effort outside its band) is decided in one place,
@@ -471,7 +475,7 @@ nearest thing it can, and `/jev` shows both what was asked and what runs.
 Each field is read from the env var first, then the plugin option, then the
 default (`configOf` in `hooks/config.ts`). A value that cannot be read is
 skipped for the next source rather than refused: a typo costs you the
-override, not the router. `/jev` prints each setting with where it came from,
+override, not the router (`context`'s env var aside, above). `/jev` prints each setting with where it came from,
 `(env)`, `(option)` or `(default)`. The engine fills an unset option with its
 manifest default, so an option set to the default reads `(default)`.
 
@@ -866,9 +870,13 @@ top choice was:
 ```
 
 The percentage on every route line is that share, P(family ≤ the one that
-runs). A moved pick runs at the likeliest of its new family's own pairs, so
-work Jev split between `haiku_high` and `opus_max` runs at `opus·max` when
-it lands on Opus, not at Haiku's effort. The
+runs). A moved pick runs at the likeliest of its new family's own pairs when
+that family holds at least half of Jev's probability, and at the whole
+answer's median effort when it holds less. At the default floor a pick moved
+up to Opus always holds the majority, so work Jev split between `haiku_high`
+and `opus_max` runs at `opus·max` when it lands on Opus, not at Haiku's
+effort; under a floor of 0.9, the same 60/40 split lands on Opus with 40%
+of the answer and runs at `opus·high`, the median. The
 floor can also land below the top pair's family when Jev splits between
 the two ends (45% Haiku, 47% Opus: the median is Sonnet), which is the cumulative
 rule doing what it says, and carries no mark. Sonnet then holds a few

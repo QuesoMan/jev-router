@@ -284,6 +284,26 @@ function pick<T>(
 }
 
 /**
+ * The context mode, the one setting that does not fall through. A typo
+ * elsewhere costs an override; here it would send the conversation the
+ * developer meant to keep, so an env value that is set but is not a mode
+ * reads as `request`, the mode that sends less. A blank one is unset. The
+ * option is a picker, which the engine never hands over unreadable, so it
+ * falls through to the default as the others do.
+ */
+function contextOf(
+  fromEnv: string | undefined,
+  fromOption: unknown,
+): ContextMode {
+  const typo =
+    fromEnv !== undefined &&
+    fromEnv.trim() !== "" &&
+    contextModeOf(fromEnv) === undefined;
+  if (typo) return "request";
+  return pick(contextModeOf, fromEnv, fromOption, DEFAULT_CONFIG.context);
+}
+
+/**
  * The router's settings from the plugin's options and the environment.
  *
  * `options` is what `register(on, options)` was handed, `userConfig`
@@ -339,11 +359,6 @@ export function configOf(
     sonnetEffort: band("sonnetEffort"),
     opusEffort: band("opusEffort"),
     fableEffort: band("fableEffort"),
-    context: pick(
-      contextModeOf,
-      env[CONFIG_ENV.context],
-      opt.context,
-      DEFAULT_CONFIG.context,
-    ),
+    context: contextOf(env[CONFIG_ENV.context], opt.context),
   };
 }

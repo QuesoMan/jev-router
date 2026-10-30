@@ -356,14 +356,26 @@ describe("the context setting", () => {
     );
   });
 
-  test("anything else falls through: env to option, option to default", () => {
-    assert.equal(
-      configOf({ context: "request" }, { JEV_ROUTER_CONTEXT: "none" }).context,
-      "request",
-    );
+  test("an env value that is not a mode reads as request, not as the option", () => {
+    for (const typo of ["request-only", "minimal", "none", " off "]) {
+      for (const option of [undefined, "full", "request"]) {
+        assert.equal(
+          configOf({ context: option }, { JEV_ROUTER_CONTEXT: typo }).context,
+          "request",
+          `${typo} over ${option}`,
+        );
+      }
+    }
+  });
+
+  test("a blank env var is unset; an unreadable option falls through to the default", () => {
     assert.equal(
       configOf({ context: "request" }, { JEV_ROUTER_CONTEXT: "" }).context,
       "request",
+    );
+    assert.equal(
+      configOf(undefined, { JEV_ROUTER_CONTEXT: "  " }).context,
+      "full",
     );
     for (const bad of ["minimal", "", 1, true, null, ["request"]]) {
       assert.equal(configOf({ context: bad }, noEnv).context, "full", String(bad));

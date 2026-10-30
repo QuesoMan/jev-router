@@ -18,7 +18,8 @@
  * the turn would actually run on: the family the floor reads off Jev's
  * probabilities, each family's pairs added up (the cheapest family with at
  * least `minConfidence` of them on it or cheaper), at the likeliest of
- * that family's pairs, after the Fable gate, marked `floored` when the
+ * that family's pairs, or at the whole answer's median effort when the
+ * family holds under half of it, after the Fable gate, marked `floored` when the
  * family is above the top pair's and `capped` when the Fable bar sent it
  * to Opus. `cum` is the share of Jev's probability behind what runs,
  * P(family <= it), the number the footer prints. The lines under each row

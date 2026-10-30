@@ -1338,6 +1338,14 @@ describe("where each setting came from", () => {
     );
     assert.equal(s.fable, "option");
   });
+
+  test("an unreadable JEV_ROUTER_CONTEXT is the env's, read as request", () => {
+    const s = configSourcesOf(
+      { context: "full" },
+      { JEV_ROUTER_CONTEXT: "request-only" },
+    );
+    assert.equal(s.context, "env");
+  });
 });
 
 describe("the sticky subcommand", () => {
