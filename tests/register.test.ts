@@ -179,6 +179,8 @@ function load(
   let mainReads = 0;
   /** What `$.session.cwd()` answers, or what it throws. */
   let cwd: string | Error = "/work/app";
+  /** What `$.session.surfaces()` lists; empty is a plain `-p` run. */
+  let surfaces: readonly string[] = ["test"];
   /** How many times the session's directory was read. */
   let cwdReads = 0;
   let hanging = false;
@@ -202,7 +204,8 @@ function load(
     },
     command: { register: async () => {} },
     session: {
-      surface: async () => "test",
+      surface: async () => surfaces[0] ?? null,
+      surfaces: async () => surfaces,
       messages: async (args?: { agentId?: string }) => {
         if (args?.agentId === undefined) {
           mainReads++;
@@ -277,6 +280,10 @@ function load(
     /** The session's directory from now on, or what reading it throws. */
     setCwd: (dir: string | Error) => {
       cwd = dir;
+    },
+    /** The surfaces drawing the session from now on. */
+    setSurfaces: (list: readonly string[]) => {
+      surfaces = list;
     },
     /**
      * What Jev answers from the next call on: a family, the share of Jev's
@@ -870,6 +877,40 @@ describe("register: the route in the reply", () => {
     // streamed. One past the last text block opens a block of its own.
     const reply = texts.find((c) => c.ref !== undefined)!;
     assert.equal(texts.at(-1)!.index, reply.index + 1);
+  });
+
+  test("with nothing drawing (a plain -p run) the reply is left as the model wrote it, but still routed", async () => {
+    const { hooks, $, setSurfaces } = load();
+    setSurfaces([]);
+    await hooks.get("turn.start")!(
+      $,
+      { text: "x", turnId: "tp" },
+      async (e: unknown) => e,
+    );
+    const { chunks, sent } = await stepOf(hooks, $, { turnId: "tp" });
+
+    const texts = chunks.filter((c) => c.kind === "text") as { text: string }[];
+    assert.ok(texts.length > 0, "the reply's own text comes through");
+    for (const c of texts) {
+      assert.doesNotMatch(c.text, /jev|unrouted|─/, "no route line and no footer");
+    }
+    assert.equal(sent.model, "claude-opus-5-5", "the model is still rewritten");
+    const report = await jev(hooks, $);
+    assert.match(report.text, /opus·high/, "and /jev still has the turn");
+  });
+
+  test("a surface that attaches mid-session gets the footer from then on", async () => {
+    const { hooks, $, setSurfaces } = load();
+    setSurfaces([]);
+    await hooks.get("turn.start")!(
+      $,
+      { text: "x", turnId: "ta" },
+      async (e: unknown) => e,
+    );
+    setSurfaces(["desktop"]);
+    const { chunks } = await stepOf(hooks, $, { turnId: "ta" });
+    const texts = chunks.filter((c) => c.kind === "text") as { text: string }[];
+    assert.match(texts.at(-1)!.text, /jev {2}opus·high/);
   });
 
   test("a step that only called a tool gets no footer, since the turn goes on", async () => {

@@ -896,6 +896,24 @@ function record(r: Router, attempt: Attempt): void {
   r.attempts.length = Math.min(r.attempts.length, HISTORY_LIMIT);
 }
 
+/**
+ * Whether anything draws this session's replies. An empty list is a plain
+ * `claude -p` run or an SDK host with no surface attached: its result is
+ * the reply's last text block, so a footer there would replace the answer
+ * and a route line would land in a script's output. Asked per step, since a
+ * surface may attach after the session starts; a call that fails counts as
+ * drawn, which is how this behaved before.
+ */
+async function drawsReplies($: {
+  session: { surfaces: () => Promise<readonly string[]> };
+}): Promise<boolean> {
+  try {
+    return (await $.session.surfaces()).length > 0;
+  } catch {
+    return true;
+  }
+}
+
 /** Ties a turn to a decision and the row its usage is added to. */
 function bind(r: Router, turnId: string, routed: Routed): void {
   r.decisions.set(turnId, routed.decision);
@@ -1710,6 +1728,8 @@ export function register(on: On, options?: PluginOptions) {
     // its parent reads, and a route line in it would be read as the answer.
     const ours =
       attempt !== undefined && !isSubagent(attempt) && e.agentId === undefined;
+    // Nor into a reply nothing draws: there the text is the program's result.
+    const shown = ours && (await drawsReplies($));
 
     // The block the footer joins, so it lands at the end of the reply's text
     // rather than opening a block of its own.
@@ -1718,7 +1738,7 @@ export function register(on: On, options?: PluginOptions) {
     for await (const chunk of step) {
       if (chunk.kind === "text") {
         lastTextIndex = chunk.index;
-        if (attempt && ours && r.pending.has(e.turnId)) {
+        if (attempt && shown && r.pending.has(e.turnId)) {
           r.pending.delete(e.turnId);
           yield {
             ...chunk,
@@ -1744,7 +1764,7 @@ export function register(on: On, options?: PluginOptions) {
         // expects to see.
         if (
           attempt &&
-          ours &&
+          shown &&
           r.announce &&
           !MID_TURN.has(chunk.stopReason ?? "")
         ) {
