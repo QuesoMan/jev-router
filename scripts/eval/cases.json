@@ -1,0 +1,358 @@
+[
+  {
+    "id": "triv-t1",
+    "class": "trivial",
+    "asking": "turn",
+    "prompt": "what's the difference between git stash pop and git stash apply?",
+    "acceptable": [
+      "haiku_medium",
+      "haiku_high"
+    ]
+  },
+  {
+    "id": "triv-t2",
+    "class": "trivial",
+    "asking": "turn",
+    "prompt": "rename the variable `tmp` to `retryCount` in src/net/backoff.ts, it's only used inside computeDelay()",
+    "acceptable": [
+      "haiku_medium",
+      "haiku_high"
+    ]
+  },
+  {
+    "id": "triv-t3",
+    "class": "trivial",
+    "asking": "turn",
+    "prompt": "ok run the tests again",
+    "acceptable": [
+      "haiku_medium",
+      "haiku_high"
+    ]
+  },
+  {
+    "id": "triv-t4",
+    "class": "trivial",
+    "asking": "turn",
+    "prompt": "Update the copyright year from 2025 to 2026 in the license header comment at the top of every file under src/. There are about 140 files and it's the exact same one-line header in each: `// Copyright (c) 2025 Northwind Labs. All rights reserved.`",
+    "acceptable": [
+      "haiku_medium",
+      "haiku_high"
+    ]
+  },
+  {
+    "id": "triv-s1",
+    "class": "trivial",
+    "asking": "subagent",
+    "prompt": "Find every file in the repo that imports `lodash/debounce` or `debounce` from 'lodash'. Return the list of file paths with the line number of each import. Do not modify anything.",
+    "description": "Find lodash debounce imports",
+    "subagentType": "Explore",
+    "acceptable": [
+      "haiku_medium",
+      "haiku_high"
+    ]
+  },
+  {
+    "id": "triv-s2",
+    "class": "trivial",
+    "asking": "subagent",
+    "prompt": "Run `npm test -- --testPathPattern=auth` from the repo root and report whether it passes. If anything fails, paste the names of the failing tests and the first error line for each. Don't try to fix anything.",
+    "description": "Run auth tests",
+    "subagentType": "general-purpose",
+    "acceptable": [
+      "haiku_medium",
+      "haiku_high"
+    ]
+  },
+  {
+    "id": "triv-s3",
+    "class": "trivial",
+    "asking": "subagent",
+    "prompt": "Read package.json and the lockfile and tell me exactly which versions of react, react-dom, and typescript are installed.",
+    "description": "Check React and TS versions",
+    "subagentType": "Explore",
+    "acceptable": [
+      "haiku_medium",
+      "haiku_high"
+    ]
+  },
+  {
+    "id": "triv-s4",
+    "class": "trivial",
+    "asking": "subagent",
+    "prompt": "In README.md, change every occurrence of the misspelling 'recieve' to 'receive' (there are 3). Touch nothing else.",
+    "description": "Fix README typo",
+    "subagentType": "general-purpose",
+    "acceptable": [
+      "haiku_medium",
+      "haiku_high"
+    ]
+  },
+  {
+    "id": "simp-t1",
+    "class": "simple",
+    "asking": "turn",
+    "prompt": "add a --verbose flag to bin/cli.js that sets the logger level to 'debug' (we already use commander and the logger is in src/log.js)",
+    "acceptable": [
+      "haiku_high",
+      "sonnet_medium",
+      "sonnet_high"
+    ]
+  },
+  {
+    "id": "simp-t2",
+    "class": "simple",
+    "asking": "turn",
+    "prompt": "Write unit tests for formatCurrency in src/utils/money.ts. Cover negative amounts, zero, amounts with more than two decimals, and the JPY case where there are no minor units. Use the existing vitest setup.",
+    "acceptable": [
+      "sonnet_medium",
+      "sonnet_high"
+    ]
+  },
+  {
+    "id": "simp-t3",
+    "class": "simple",
+    "asking": "turn",
+    "prompt": "The order confirmation page shows 'Invalid Date' when order.createdAt is null (orders that haven't been processed yet). Show 'Pending' instead in that case.",
+    "acceptable": [
+      "haiku_high",
+      "sonnet_medium",
+      "sonnet_high"
+    ]
+  },
+  {
+    "id": "simp-t4",
+    "class": "simple",
+    "asking": "turn",
+    "prompt": "Add limit/offset pagination to GET /api/projects. Default limit 20, max 100, return a `total` count alongside `items`. Update the existing route test.",
+    "acceptable": [
+      "sonnet_medium",
+      "sonnet_high"
+    ]
+  },
+  {
+    "id": "simp-s1",
+    "class": "simple",
+    "asking": "subagent",
+    "prompt": "Add a JSDoc block to each exported function in src/lib/strings.ts (there are 9). Describe each parameter and the return value based on the implementation. Don't change any code.",
+    "description": "Add JSDoc to string utils",
+    "subagentType": "general-purpose",
+    "acceptable": [
+      "haiku_high",
+      "sonnet_medium",
+      "sonnet_high"
+    ]
+  },
+  {
+    "id": "simp-s2",
+    "class": "simple",
+    "asking": "subagent",
+    "prompt": "Convert the three class components in src/components/legacy/ (Banner.jsx, Footer.jsx, NavLink.jsx) to function components using hooks. They only use this.state and componentDidMount; none use refs, context, or getDerivedStateFromProps. Keep props and rendered output identical and make sure the snapshot tests still pass.",
+    "description": "Convert legacy class components",
+    "subagentType": "general-purpose",
+    "acceptable": [
+      "sonnet_medium",
+      "sonnet_high"
+    ]
+  },
+  {
+    "id": "simp-s3",
+    "class": "simple",
+    "asking": "subagent",
+    "prompt": "Write a new database migration that adds a nullable `archived_at timestamptz` column to the `projects` table and a btree index on it. Follow the naming and up/down structure used by the existing files in migrations/. Don't run it against any database.",
+    "description": "Add archived_at migration",
+    "subagentType": "general-purpose",
+    "acceptable": [
+      "sonnet_medium",
+      "sonnet_high"
+    ]
+  },
+  {
+    "id": "simp-s4",
+    "class": "simple",
+    "asking": "subagent",
+    "prompt": "Replace the hand-rolled deepClone in src/state/clone.js with the built-in structuredClone, update its call sites, and make sure `npm test` still passes.",
+    "description": "Replace custom deep clone",
+    "subagentType": "general-purpose",
+    "acceptable": [
+      "sonnet_medium",
+      "sonnet_high"
+    ]
+  },
+  {
+    "id": "ord-t1",
+    "class": "ordinary",
+    "asking": "turn",
+    "prompt": "users say the dashboard sometimes shows the previous workspace's charts if they switch workspaces quickly. can you figure out why and fix it",
+    "acceptable": [
+      "opus_high",
+      "opus_xhigh"
+    ]
+  },
+  {
+    "id": "ord-t2",
+    "class": "ordinary",
+    "asking": "turn",
+    "prompt": "just bump express from 4 to 5 in package.json and make sure the app still starts",
+    "acceptable": [
+      "opus_medium",
+      "opus_high"
+    ]
+  },
+  {
+    "id": "ord-t3",
+    "class": "ordinary",
+    "asking": "turn",
+    "prompt": "Implement retries for the webhook dispatcher in src/webhooks/dispatch.ts: exponential backoff with full jitter, max 8 attempts, honor Retry-After on 429/503, don't retry other 4xx, and persist attempt count so retries survive a worker restart. Add tests.",
+    "acceptable": [
+      "opus_medium",
+      "opus_high"
+    ]
+  },
+  {
+    "id": "ord-t4",
+    "class": "ordinary",
+    "asking": "turn",
+    "prompt": "Refactor the checkout payment form to use react-hook-form with a zod schema instead of the manual useState validation. Keep the exact same error messages and the same behavior where the card field validates on blur but the address fields validate on submit.",
+    "acceptable": [
+      "opus_medium",
+      "opus_high"
+    ]
+  },
+  {
+    "id": "ord-s1",
+    "class": "ordinary",
+    "asking": "subagent",
+    "prompt": "The e2e CI job became flaky about a week ago: checkout.spec.ts times out roughly 1 run in 5 at the 'place order' step. Look at commits from the last two weeks touching checkout, the spec itself, the Playwright config, and the CI workflow. Report the most likely root cause with concrete evidence (commit, line, timing). Don't fix anything.",
+    "description": "Investigate flaky e2e checkout test",
+    "subagentType": "general-purpose",
+    "acceptable": [
+      "opus_medium",
+      "opus_high",
+      "opus_xhigh"
+    ]
+  },
+  {
+    "id": "ord-s2",
+    "class": "ordinary",
+    "asking": "subagent",
+    "prompt": "Review the diff of branch feature/rate-limits against main for correctness bugs. Focus on the new token-bucket middleware, how Redis keys are built and expired, and the config wiring for per-route limits. Report issues ranked by severity with file and line. Ignore style.",
+    "description": "Review rate-limit branch",
+    "subagentType": "general-purpose",
+    "acceptable": [
+      "opus_high",
+      "opus_xhigh"
+    ]
+  },
+  {
+    "id": "ord-s3",
+    "class": "ordinary",
+    "asking": "subagent",
+    "prompt": "Add OpenTelemetry tracing to services/orders: a span per HTTP handler, child spans for each Postgres query via the pg instrumentation, and propagate trace context through the BullMQ jobs we enqueue so the worker's spans join the same trace. Export via OTLP to the endpoint in OTEL_EXPORTER_OTLP_ENDPOINT. Keep it off when that env var is unset.",
+    "description": "Add tracing to order service",
+    "subagentType": "general-purpose",
+    "acceptable": [
+      "opus_medium",
+      "opus_high"
+    ]
+  },
+  {
+    "id": "ord-s4",
+    "class": "ordinary",
+    "asking": "subagent",
+    "prompt": "Implement the contacts CSV import endpoint described in docs/specs/csv-import.md: stream-parse uploads up to 50MB, validate each row against the contact schema, collect per-row errors without aborting the whole file, upsert valid rows in batches of 500 inside a transaction per batch, and return a summary. Add tests for malformed quoting, BOMs, and duplicate emails within one file.",
+    "description": "Build CSV import pipeline",
+    "subagentType": "general-purpose",
+    "acceptable": [
+      "opus_medium",
+      "opus_high"
+    ]
+  },
+  {
+    "id": "exc-t1",
+    "class": "exceptional",
+    "asking": "turn",
+    "prompt": "We're seeing rare double charges in production, maybe 1 in 20k payments. POST /charges is supposed to be idempotent on the Idempotency-Key header, but we run 6 replicas behind the load balancer and the LB retries on 502. Find the actual cause and fix it in a way we can deploy without downtime.",
+    "acceptable": [
+      "opus_xhigh",
+      "opus_max"
+    ]
+  },
+  {
+    "id": "exc-t2",
+    "class": "exceptional",
+    "asking": "turn",
+    "prompt": "Plan the migration of our single-tenant Postgres schema (~2TB, live traffic 24/7) to a shared multi-tenant schema with tenant_id on every table and row-level security. It must be zero-downtime and reversible at each step. Write the phased plan and the first two migrations.",
+    "acceptable": [
+      "opus_xhigh",
+      "opus_max"
+    ]
+  },
+  {
+    "id": "exc-t3",
+    "class": "exceptional",
+    "asking": "turn",
+    "prompt": "can you just remove the mutex in LedgerWriter.append? profiling says it's our bottleneck",
+    "acceptable": [
+      "opus_xhigh",
+      "opus_max"
+    ]
+  },
+  {
+    "id": "exc-t4",
+    "class": "exceptional",
+    "asking": "turn",
+    "prompt": "Our collaborative editor's CRDT diverges between clients after concurrent deletes that span a remote insert: two clients end up with different text and never reconverge. Find the bug in src/crdt/merge.ts, fix it, and add a property-based test that checks convergence for random concurrent op sequences.",
+    "acceptable": [
+      "opus_xhigh",
+      "opus_max"
+    ]
+  },
+  {
+    "id": "exc-s1",
+    "class": "exceptional",
+    "asking": "subagent",
+    "prompt": "Audit the OAuth 2.0 / OIDC implementation in services/auth before it ships to customers' enterprise SSO next week. Check PKCE verification, state and nonce validation, redirect_uri matching (exact vs prefix), ID token signature and audience checks, refresh token rotation and reuse detection, and session fixation on login. For each finding give the exploit scenario and the fix. Do not modify code.",
+    "description": "Security audit of OIDC flow",
+    "subagentType": "general-purpose",
+    "acceptable": [
+      "opus_xhigh",
+      "opus_max"
+    ]
+  },
+  {
+    "id": "exc-s2",
+    "class": "exceptional",
+    "asking": "subagent",
+    "prompt": "Under load (>2k concurrent requests) the Rust service deadlocks inside crates/pool: tasks wait forever on acquire() while the pool reports idle connections. Reproduce it with a loom model test, identify the exact interleaving, and fix it without adding a global lock. Explain why the fix is correct.",
+    "description": "Fix connection pool deadlock",
+    "subagentType": "general-purpose",
+    "acceptable": [
+      "opus_xhigh",
+      "opus_max"
+    ]
+  },
+  {
+    "id": "exc-s3",
+    "class": "exceptional",
+    "asking": "subagent",
+    "prompt": "Implement a bounded lock-free MPMC ring buffer in C++20 for the market-data feed handler in feed/queue.hpp. Use explicit memory orderings (no seq_cst everywhere) and justify each one in a comment, avoid false sharing, and handle the ABA problem. Add a stress test that runs under ThreadSanitizer and a benchmark against the current mutex queue.",
+    "description": "Implement lock-free ring buffer",
+    "subagentType": "general-purpose",
+    "acceptable": [
+      "opus_xhigh",
+      "opus_max"
+    ]
+  },
+  {
+    "id": "exc-s4",
+    "class": "exceptional",
+    "asking": "subagent",
+    "prompt": "We need to move the event-sourced balances service from event schema v3 to v4. Verify that every projection in services/balances/projections can be rebuilt by replaying the full history through the new upcasters, identify any v3 event types whose upcast to v4 loses information, and write the upcasters. This is the system of record for customer balances; data loss is unacceptable. Report anything you cannot prove safe.",
+    "description": "Plan event store schema cutover",
+    "subagentType": "general-purpose",
+    "acceptable": [
+      "opus_xhigh",
+      "opus_max"
+    ]
+  }
+]

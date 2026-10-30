@@ -1,6 +1,83 @@
 {
   "name": "jev-router",
-  "version": "0.1.0",
-  "description": "Routes each turn to a Claude model chosen by TypeSafe's Jev, asked through the Vercel AI Gateway.",
-  "author": { "name": "Satvik Sinha" }
+  "version": "0.4.1",
+  "description": "Routes each turn, subagent and workflow agent to the cheapest Claude model and effort that can do it well, as judged by TypeSafe's Jev (asked directly or through the Vercel AI Gateway). Jev is asked one question, which model thinking how hard, over the model·effort pairs each family's effort band allows, and is shown the request with the conversation and files around it, or the request alone under the context setting. Opus at high effort by default; the default, the bands and Fable are your settings.",
+  "author": { "name": "Satvik Sinha" },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "fable": {
+      "type": "string",
+      "title": "Fable",
+      "description": "When work may run on Fable. never: Opus at the top of its effort band is the ceiling. hardest: only the exceptional few where Jev puts enough of its probability on Fable, the work even Opus at its top effort would miss. open: Fable for planning, architecture, systematic debugging and research. JEV_ROUTER_FABLE overrides it.",
+      "options": ["never", "hardest", "open"],
+      "default": "never"
+    },
+    "fableConfidence": {
+      "type": "number",
+      "title": "Fable confidence",
+      "description": "Under hardest, how much of Jev's probability (0 to 1, or a percentage) must be on Fable itself before a task runs on Fable; below it, Opus at the top of its effort band. Read from the probabilities, not the answer's confidence score. JEV_ROUTER_FABLE_CONFIDENCE overrides it.",
+      "default": 0.75
+    },
+    "minConfidence": {
+      "type": "number",
+      "title": "Minimum confidence",
+      "description": "How much of Jev's probability (0 to 1, or a percentage), each model's pairs added up, must say a model or a cheaper one is enough before it is picked: the pick is the cheapest model where that share is reached, at its likeliest effort (or, when that model holds under half of Jev's probability, the median effort of the whole answer), so 0.5 is the median of Jev's answer, higher leans toward stronger models. 0 turns the floor off and takes Jev's top choice. JEV_ROUTER_MIN_CONFIDENCE overrides it.",
+      "default": 0.5
+    },
+    "routeSubagents": {
+      "type": "boolean",
+      "title": "Route subagents",
+      "description": "Also route Agent-tool subagents and workflow agent() calls through Jev. JEV_ROUTER_SUBAGENTS overrides it.",
+      "default": true
+    },
+    "defaultModel": {
+      "type": "string",
+      "title": "Default model",
+      "description": "The family a turn runs on when Jev cannot be reached, and the one Jev is told unclear work belongs to. fable only counts under the open Fable setting; otherwise Opus stands in. JEV_ROUTER_DEFAULT_MODEL overrides it.",
+      "options": ["haiku", "sonnet", "opus", "fable"],
+      "default": "opus"
+    },
+    "defaultEffort": {
+      "type": "string",
+      "title": "Default effort",
+      "description": "The effort the default model runs at, and the one any pick gets when Jev gives none; kept inside the model's effort band. JEV_ROUTER_DEFAULT_EFFORT overrides it.",
+      "options": ["low", "medium", "high", "xhigh", "max"],
+      "default": "high"
+    },
+    "haikuEffort": {
+      "type": "string",
+      "title": "Haiku effort band",
+      "description": "How hard Haiku may think: Jev's effort is kept inside this band. One level, or lowest-highest. JEV_ROUTER_HAIKU_EFFORT overrides it.",
+      "options": ["low", "low-medium", "low-high", "low-xhigh", "low-max", "medium", "medium-high", "medium-xhigh", "medium-max", "high", "high-xhigh", "high-max", "xhigh", "xhigh-max", "max"],
+      "default": "medium-high"
+    },
+    "sonnetEffort": {
+      "type": "string",
+      "title": "Sonnet effort band",
+      "description": "How hard Sonnet may think: Jev's effort is kept inside this band. One level, or lowest-highest. JEV_ROUTER_SONNET_EFFORT overrides it.",
+      "options": ["low", "low-medium", "low-high", "low-xhigh", "low-max", "medium", "medium-high", "medium-xhigh", "medium-max", "high", "high-xhigh", "high-max", "xhigh", "xhigh-max", "max"],
+      "default": "medium-max"
+    },
+    "opusEffort": {
+      "type": "string",
+      "title": "Opus effort band",
+      "description": "How hard Opus may think: Jev's effort is kept inside this band, and its top is the ceiling while Fable is held back. One level, or lowest-highest. JEV_ROUTER_OPUS_EFFORT overrides it.",
+      "options": ["low", "low-medium", "low-high", "low-xhigh", "low-max", "medium", "medium-high", "medium-xhigh", "medium-max", "high", "high-xhigh", "high-max", "xhigh", "xhigh-max", "max"],
+      "default": "medium-max"
+    },
+    "fableEffort": {
+      "type": "string",
+      "title": "Fable effort band",
+      "description": "How hard Fable may think, when the Fable setting lets it run: Jev's effort is kept inside this band. One level, or lowest-highest. JEV_ROUTER_FABLE_EFFORT overrides it.",
+      "options": ["low", "low-medium", "low-high", "low-xhigh", "low-max", "medium", "medium-high", "medium-xhigh", "medium-max", "high", "high-xhigh", "high-max", "xhigh", "xhigh-max", "max"],
+      "default": "medium-max"
+    },
+    "context": {
+      "type": "string",
+      "title": "Context sent to Jev",
+      "description": "What leaves the machine with each question to TypeSafe. full: the request, the last few messages of the conversation (the agent's replies can quote tool output), the files in play, and beside a short subagent brief the developer's last request. request: only the request, and for a subagent its brief, description, agent type and whether a workflow started it; the transcript is never read. JEV_ROUTER_CONTEXT overrides it.",
+      "options": ["full", "request"],
+      "default": "full"
+    }
+  }
 }

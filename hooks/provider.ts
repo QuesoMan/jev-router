@@ -24,6 +24,14 @@ export type ProviderResult =
       reason: string;
     };
 
+/** The env vars `providerOf` reads, for scripts that rebuild its input. */
+export const PROVIDER_ENV_KEYS = [
+  "TYPESAFE_API_KEY",
+  "AI_GATEWAY_API_KEY",
+  "JEV_ROUTER_PROVIDER",
+  "TYPESAFE_BASE_URL",
+] as const;
+
 export type ProviderEnv = {
   TYPESAFE_API_KEY: string | undefined;
   AI_GATEWAY_API_KEY: string | undefined;

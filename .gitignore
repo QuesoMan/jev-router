@@ -1,3 +1,5 @@
 node_modules/
 .DS_Store
 .claude/types/
+# Each run of scripts/eval/compare.mjs; the recorded baseline is ab-results.json.
+scripts/eval/results/
